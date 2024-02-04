@@ -1,6 +1,7 @@
 module.exports = {
   root: true,
   env: { browser: true, es2020: true },
+  plugins: ["react-refresh", "@typescript-eslint", "react"],
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
@@ -9,6 +10,7 @@ module.exports = {
     "plugin:react/recommended",
     "plugin:react/jsx-runtime",
     "plugin:react-hooks/recommended",
+    "plugin:tailwindcss/recommended",
   ],
   ignorePatterns: ["dist", ".eslintrc.cjs"],
   parser: "@typescript-eslint/parser",
@@ -18,7 +20,6 @@ module.exports = {
     project: ["./tsconfig.json", "./tsconfig.node.json"],
     tsconfigRootDir: __dirname,
   },
-  plugins: ["react-refresh", "@typescript-eslint", "react"],
   rules: {
     "react-refresh/only-export-components": [
       "warn",
