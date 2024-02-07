@@ -1,3 +1,5 @@
+import Button from "./Button";
+
 const Card = () => {
   return (
     <div className="w-64 rounded-2xl bg-blue-200 p-2">
@@ -17,6 +19,7 @@ const Card = () => {
         <div className="flex items-center justify-center">
           <span className="text-gray-700">R$ 149,99</span>
         </div>
+        <Button>Adicionar ao Carrinho</Button>
       </div>
     </div>
   );
