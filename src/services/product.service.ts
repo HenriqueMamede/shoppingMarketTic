@@ -16,10 +16,16 @@ const findByName = async (name: string) => {
   return response.data;
 };
 
+const findSortPrice = async () => {
+  const response = await http.get<ProductProps[]>(`/products?_sort=price`);
+  return response.data;
+};
+
 const ProductService = {
   findAll,
   findById,
   findByName,
+  findSortPrice,
 };
 
 export default ProductService;

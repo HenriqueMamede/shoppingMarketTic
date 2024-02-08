@@ -17,7 +17,9 @@ const Card = ({ item }: Product) => {
 
       <div className="flex flex-col gap-2 p-4">
         <div className="mb-2 flex items-center justify-center">
-          <h3 className="text-center text-lg font-bold">{item.name}</h3>
+          <h3 className="text-center text-lg font-bold capitalize">
+            {item.name}
+          </h3>
         </div>
 
         <div className="flex items-center justify-center">
