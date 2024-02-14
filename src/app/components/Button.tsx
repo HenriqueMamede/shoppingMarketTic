@@ -7,11 +7,7 @@ const buttonVariants = tv({
   variants: {
     variant: {
       primary:
-        "rounded bg-blue-500 px-4 py-2 hover:bg-blue-700 hover:text-white",
-    },
-    size: {
-      md: "max-w-[15rem]",
-      full: "w-full",
+        "w-full rounded bg-blue-500 px-4 py-2 hover:bg-blue-700 hover:text-white",
     },
   },
   defaultVariants: {
@@ -22,14 +18,8 @@ const buttonVariants = tv({
 export type ButtonProps = ComponentProps<"button"> &
   VariantProps<typeof buttonVariants>;
 
-const Button = ({
-  variant,
-  size = "full",
-  className,
-  children,
-  ...props
-}: ButtonProps) => {
-  const buttonClasses = twMerge(buttonVariants({ variant, size }), className);
+const Button = ({ variant, className, children, ...props }: ButtonProps) => {
+  const buttonClasses = twMerge(buttonVariants({ variant }), className);
 
   return (
     <button className={buttonClasses} {...props}>

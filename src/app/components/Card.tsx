@@ -1,12 +1,12 @@
+import { useShoppingList } from "../../context/ShoppingCart";
 import { Product } from "../interfaces/Produtc";
 import Button from "./Button";
 
 const Card = ({ item }: Product) => {
+  const { addProduct } = useShoppingList();
+
   return (
-    <div
-      key={item.id}
-      className="flex h-96 w-64 flex-col justify-center rounded-2xl bg-white p-2"
-    >
+    <div key={item.id} className="w-60 rounded-2xl bg-white p-4">
       <div className="flex justify-center">
         <img
           src={`http://localhost:5173/assets/products/${item.image}.jpg`}
@@ -15,17 +15,17 @@ const Card = ({ item }: Product) => {
         />
       </div>
 
-      <div className="flex flex-col gap-2 p-4">
+      <div className="p-4">
         <div className="mb-2 flex items-center justify-center">
-          <h3 className="text-center text-lg font-bold capitalize">
-            {item.name}
-          </h3>
+          <h3>{item.name}</h3>
         </div>
 
         <div className="flex items-center justify-center">
-          <span className="text-gray-700">R$ {item.price}</span>
+          <span>R$ {item.price}</span>
         </div>
-        <Button>Adicionar ao Carrinho</Button>
+        <Button onClick={() => addProduct(item.id, item.name, item.price)}>
+          Adicionar ao Carrinho
+        </Button>
       </div>
     </div>
   );

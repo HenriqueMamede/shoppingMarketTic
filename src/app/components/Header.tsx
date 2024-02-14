@@ -1,22 +1,23 @@
 import { ChangeEvent, useRef, useState } from "react";
-import { debounce } from "lodash";
-import Input from "../components/Input";
 import { useQuery } from "react-query";
+import { debounce } from "lodash";
+import { CiShoppingCart } from "react-icons/ci";
+import { Link } from "react-router-dom";
+import Input from "../components/Input";
 import { ProductProps } from "../interfaces/Produtc";
 import ProductService from "../../services/product.service";
 import { useOnClickOutside } from "../hooks/useClickOutside";
-import { CiShoppingCart } from "react-icons/ci";
+import List from "./List";
 
 const Header = () => {
   const [searchProduct, setSearchProduct] = useState("");
-  const dropdownRef = useRef<HTMLUListElement>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLUListElement>(null);
 
-  const {
-    isLoading: isLoadingProduct,
-    data: product,
-    // error,
-  } = useQuery<ProductProps[], Error>(
+  const { isLoading: isLoadingProduct, data: product } = useQuery<
+    ProductProps[],
+    Error
+  >(
     ["query-specific-product", searchProduct],
     async () => {
       return ProductService.findByName(searchProduct);
@@ -44,37 +45,50 @@ const Header = () => {
     <header className="fixed right-0 top-0 flex w-full bg-white py-3">
       <div className="mx-auto flex w-11/12 items-center justify-between gap-52">
         <div className="flex">
-          <a href="/">
+          <Link to="/" relative="path">
             <img
               className="max-w-36"
               src="http://localhost:5173/assets/logo.png"
               alt="Company Logo"
             />
-          </a>
+          </Link>
         </div>
-        {/*  */}
-
         <div className="relative w-4/5">
           <Input onChange={debouncedHandleOnChange} />
-          <ul
-            id="search-results"
-            className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white px-2 shadow-lg"
-            ref={dropdownRef}
-          >
-            {isOpen &&
-              product?.map((product: ProductProps) => {
-                return <li key={product.id}>{product.name}</li>;
+          {isOpen && (
+            <ul
+              id="search-results"
+              className="absolute z-50 mt-4 max-h-60 w-full overflow-auto rounded-md bg-white p-4 shadow-lg"
+              ref={dropdownRef}
+            >
+              {product?.map((product: ProductProps) => {
+                return (
+                  <List
+                    className="items-center justify-between"
+                    key={product.id}
+                  >
+                    {product.name}
+                    <div className="flex flex-col items-center gap-2">
+                      <img
+                        className="h-20 rounded-t-lg object-cover"
+                        src={`http://localhost:5173/assets/products/${product.image}.jpg`}
+                      />
+                      <span>R$ {product.price}</span>
+                    </div>
+                  </List>
+                );
               })}
-            {isLoadingProduct && <li>Carregando...</li>}
-          </ul>
+            </ul>
+          )}
+          {isLoadingProduct && <List>Carregando...</List>}
         </div>
         <div className="flex items-center justify-between gap-12">
-          <a href="/login" className="text-blue-500 hover:underline">
+          {/* <a href="/login" className="text-blue-500 hover:underline">
             Login
-          </a>
-          <a href="/login">
+          </a> */}
+          <Link to="/shopping-cart" relative="path">
             <CiShoppingCart className="h-12 w-20" />
-          </a>
+          </Link>
         </div>
       </div>
     </header>

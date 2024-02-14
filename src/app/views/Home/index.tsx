@@ -1,16 +1,17 @@
+import { useQuery, useQueryClient } from "react-query";
+import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { tv } from "tailwind-variants";
 import Card from "../../components/Card";
 import { ProductProps } from "../../interfaces/Produtc";
 import ProductService from "../../../services/product.service";
-import { useQuery } from "react-query";
-import { useState } from "react";
+import Button from "../../components/Button";
+import List from "../../components/List";
 
 const containerVariants = tv({
   variants: {
     variant: {
       fullCardList: "grid h-5/6 w-11/12 grid-cols-4 gap-4 overflow-x-auto",
-      // "mb-36 mt-60 grid h-5/6 w-11/12 grid-cols-4 gap-4 overflow-x-auto",
     },
   },
 });
@@ -26,22 +27,15 @@ const menuListVariants = tv({
 const Home = () => {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const [isTypeFilter, setIsTypeFilter] = useState("");
-  const [products, setProducts] = useState<ProductProps[]>();
+  const queryClient = useQueryClient();
 
-  const { isLoading: isLoadingProducts, error } = useQuery<
-    ProductProps[],
-    Error
-  >(
-    ["query-products"],
-    async () => {
-      return ProductService.findAll();
-    },
-    {
-      onSuccess: (res) => {
-        setProducts(res);
-      },
-    },
-  );
+  const {
+    isLoading: isLoadingProducts,
+    error,
+    data: products,
+  } = useQuery<ProductProps[], Error>("query-products", async () => {
+    return ProductService.findAll();
+  });
 
   const {
     isLoading: isLoadingProductsFilter,
@@ -58,7 +52,7 @@ const Home = () => {
       onSuccess: (res) => {
         const data = res;
         isTypeFilter === "maior" ? data.reverse() : data;
-        setProducts(data);
+        queryClient.setQueryData("query-products", () => data);
       },
     },
   );
@@ -72,7 +66,7 @@ const Home = () => {
   const menuListClasses = twMerge(
     menuListVariants(),
     isOpenMenu
-      ? "flex items-center flex-col absolute top-60 bg-white rounded-md p-4 shadow-lg shadow-black w-44 mr-44"
+      ? "flex items-center flex-col absolute top-60 bg-white rounded-md p-4 shadow-lg shadow-black w-44"
       : "hidden",
   );
 
@@ -85,41 +79,37 @@ const Home = () => {
     setIsTypeFilter(type);
   };
 
+  const optionsFilter = [
+    {
+      name: "Maior preço",
+      value: "maior",
+      class: "flex justify-center w-full",
+    },
+    {
+      name: "Menor preço",
+      value: "menor",
+      class: "flex justify-center w-full",
+    },
+  ];
+
   return (
     <div className="mt-32 flex h-4/5 w-full flex-col items-center justify-center gap-16">
-      <div className="flex w-full flex-col items-end">
-        <button
-          id="dropdownMenu"
-          className="mr-44 inline-flex w-24 items-center rounded-md border bg-blue-500 px-3 py-2 text-center text-sm font-medium text-black"
-          onClick={handleClickMenu}
-        >
+      <div className="flex w-4/5 flex-col items-end">
+        <Button className="w-24" onClick={handleClickMenu}>
           Filtro
-          <svg
-            className="-mr-1 ml-4 size-5"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M5.293 7.293a1 1 0 011.414 0L10 11.414l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </button>
-        <ul id="dropdownMenuContent" className={menuListClasses}>
-          <li
-            className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
-            onClick={() => handleFilter("maior")}
-          >
-            Maior preço
-          </li>
-          <li
-            className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
-            onClick={() => handleFilter("menor")}
-          >
-            Menor preço
-          </li>
+        </Button>
+        <ul className={menuListClasses}>
+          {optionsFilter.map((item) => {
+            return (
+              <List
+                key={item.name}
+                className={item.class}
+                onClick={() => handleFilter(item.value)}
+              >
+                {item.name}
+              </List>
+            );
+          })}
         </ul>
       </div>
 
