@@ -8,19 +8,24 @@ export interface ListItem {
   id: number;
   name: string;
   quantity: number;
+  unitPrice: number;
   amount: number;
 }
 
 export interface ShoppingListContextData {
   items: ListItem[];
+  totalAmountSum: number;
+  totalQtd: number;
   addProduct: (id: number, name: string, price: number) => void;
   onRemove: (id: number) => void;
-  onDecrease: (id: number) => void;
+  onDecrease: (id: number, price: number) => void;
   isInList: (id: number) => boolean;
 }
 
 const ShoppingListContextDefaultValues = {
   items: [],
+  totalAmountSum: 0,
+  totalQtd: 0,
   addProduct: () => null,
   onRemove: () => null,
   onDecrease: () => null,
@@ -44,6 +49,7 @@ export const ShoppingListProvider = ({
         id: id,
         name: name,
         amount: price,
+        unitPrice: price,
         quantity: 1,
       };
       return setItems([...items, item]);
@@ -69,10 +75,11 @@ export const ShoppingListProvider = ({
     setItems(filteredItems);
   };
 
-  const onDecrease = (id: number) => {
+  const onDecrease = (id: number, price: number) => {
     const productAlreadyInCart = items.find((product) => product.id === id);
-    if (productAlreadyInCart?.quantity === 0) {
-      onRemove(id);
+
+    if (productAlreadyInCart && productAlreadyInCart?.quantity <= 1) {
+      return onRemove(id);
     }
 
     if (productAlreadyInCart) {
@@ -81,6 +88,7 @@ export const ShoppingListProvider = ({
           ? {
               ...cartItem,
               quantity: Number(cartItem.quantity) - 1,
+              amount: cartItem.amount - price,
             }
           : cartItem,
       );
@@ -93,9 +101,27 @@ export const ShoppingListProvider = ({
     return items.some((item) => item.id === id);
   };
 
+  const totalAmountSum = items.reduce((acc, item) => {
+    const amountItem = item.amount;
+    return acc + amountItem;
+  }, 0);
+
+  const totalQtd = items.reduce((acc, item) => {
+    const qtdItem = item.quantity;
+    return acc + qtdItem;
+  }, 0);
+
   return (
     <ShoppingListContext.Provider
-      value={{ items, addProduct, onDecrease, onRemove, isInList }}
+      value={{
+        items,
+        totalQtd,
+        totalAmountSum,
+        addProduct,
+        onDecrease,
+        onRemove,
+        isInList,
+      }}
     >
       {children}
     </ShoppingListContext.Provider>

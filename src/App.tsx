@@ -1,27 +1,26 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Header from "./app/components/Header";
-import Home from "./app/views/Home";
 import { ShoppingListProvider } from "./context/ShoppingCart";
+import Home from "./app/views/Home";
 import ShoppingCart from "./app/views/ShoppingCart";
+import Layout from "./app/components/Layout";
+import Login from "./app/views/Login";
+import Register from "./app/views/Register";
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: (
-      <>
-        <Header />
-        <Home />
-      </>
-    ),
+    path: "/login",
+    element: <Login />,
   },
   {
-    path: "/shopping-cart",
-    element: (
-      <>
-        <Header />
-        <ShoppingCart />
-      </>
-    ),
+    path: "/register",
+    element: <Register />,
+  },
+  {
+    element: <Layout />,
+    children: [
+      { path: "/", element: <Home /> },
+      { path: "/shopping-cart", element: <ShoppingCart /> },
+    ],
   },
 ]);
 

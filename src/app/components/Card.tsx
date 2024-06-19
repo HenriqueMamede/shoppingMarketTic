@@ -9,7 +9,7 @@ const Card = ({ item }: Product) => {
     <div key={item.id} className="w-60 rounded-2xl bg-white p-4">
       <div className="flex justify-center">
         <img
-          src={`http://localhost:5173/assets/products/${item.image}.jpg`}
+          src={`http://localhost:5174/assets/products/${item.image}.jpg`}
           alt={item.name}
           className="h-40 rounded-t-lg object-cover"
         />
@@ -17,7 +17,7 @@ const Card = ({ item }: Product) => {
 
       <div className="p-4">
         <div className="mb-2 flex items-center justify-center">
-          <h3>{item.name}</h3>
+          <h3 className="text-center capitalize">{item.name}</h3>
         </div>
 
         <div className="flex items-center justify-center">

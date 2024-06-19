@@ -7,14 +7,20 @@ const inputVariants = tv({
 
 type InputProps = ComponentProps<"input">;
 
-const Input = ({ onChange }: InputProps) => {
+const Input = ({
+  onChange,
+  placeholder = "Search...",
+  type = "text",
+  ...props
+}: InputProps) => {
   return (
     <div className="flex w-full flex-col gap-2">
       <input
         className={inputVariants.base}
-        type="text"
-        placeholder="Search..."
+        type={type}
+        placeholder={placeholder}
         onChange={onChange}
+        {...props}
       />
     </div>
   );

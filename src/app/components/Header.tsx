@@ -8,11 +8,14 @@ import { ProductProps } from "../interfaces/Produtc";
 import ProductService from "../../services/product.service";
 import { useOnClickOutside } from "../hooks/useClickOutside";
 import List from "./List";
+import { useShoppingList } from "../../context/ShoppingCart";
 
 const Header = () => {
   const [searchProduct, setSearchProduct] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLUListElement>(null);
+
+  const { totalQtd } = useShoppingList();
 
   const { isLoading: isLoadingProduct, data: product } = useQuery<
     ProductProps[],
@@ -86,8 +89,13 @@ const Header = () => {
           {/* <a href="/login" className="text-blue-500 hover:underline">
             Login
           </a> */}
-          <Link to="/shopping-cart" relative="path">
+          <Link className="flex" to="/shopping-cart" relative="path">
             <CiShoppingCart className="h-12 w-20" />
+            {totalQtd > 0 && (
+              <div className="relative right-8 flex size-6 justify-center rounded-3xl bg-blue-400">
+                <span>{totalQtd}</span>
+              </div>
+            )}
           </Link>
         </div>
       </div>
